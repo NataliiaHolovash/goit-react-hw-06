@@ -1,40 +1,32 @@
+// src/redux/store.js
 import { configureStore } from '@reduxjs/toolkit';
-import {
-  persistStore,
-  persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from 'redux-persist'
-import storage from 'redux-persist/lib/storage';
-import { contactsReducer } from './contactsSlice';
-import { filtersReducer } from './filtersSlice';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // Локальне сховище
+import contactsReducer from './contactsSlice';
+import filtersReducer from './filtersSlice';
 
-const contactsPersistConfig = {
-  key: 'contacts',
+// Конфігурація для redux-persist
+const persistConfig = {
+  key: 'root',
   storage,
-  whitelist: ['items'],
+  whitelist: ['contacts'],  // Зберігаємо лише слайс contacts
 };
 
-const contactsPersistedReducer = persistReducer(
-  contactsPersistConfig,
-  contactsReducer
-);
+const persistedContactsReducer = persistReducer(persistConfig, contactsReducer);
 
-export const store = configureStore({
+const store = configureStore({
   reducer: {
-    contacts: contactsPersistedReducer,
+    contacts: persistedContactsReducer,
     filters: filtersReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        ignoredActions: ['persist/PERSIST'], // Ігноруємо PERSIST для серіалізації
       },
     }),
 });
 
-export const persistor = persistStore(store);
+const persistor = persistStore(store);
+
+export { store, persistor };

@@ -1,16 +1,21 @@
+import React from 'react';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistor } from '../../redux/store';
 import ContactForm from '../ContactForm/ContactForm';
 import ContactList from '../ContactList/ContactList';
 import SearchBox from '../SearchBox/SearchBox';
-import style from './App.module.css';
+import styles from './App.module.css';
 
 const App = () => {
   return (
-    <div className={style.wrap}>
-      <h1>Phonebook</h1>
-      <ContactForm />
-      <SearchBox />
-      <ContactList />
-    </div>
+    <PersistGate loading={null} persistor={persistor}>
+      <div className={styles.app}>
+        <h2>📖 Книга контактів</h2>
+        <ContactForm />
+        <SearchBox />
+        <ContactList />
+      </div>
+    </PersistGate>
   );
 };
 
