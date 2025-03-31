@@ -1,4 +1,4 @@
-// src/redux/filtersSlice.js
+
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
@@ -10,7 +10,7 @@ const filtersSlice = createSlice({
   initialState,
   reducers: {
     changeFilter: (state, action) => {
-      state.name = action.payload; // Зміна значення фільтра
+      state.name = action.payload; 
     },
   },
 });
