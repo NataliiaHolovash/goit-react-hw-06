@@ -1,15 +1,30 @@
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { nanoid } from 'nanoid';
+import { selectNameFilter } from '../../redux/selectors';
 import { changeFilter } from '../../redux/filtersSlice';
-import styles from './SearchBox.module.css';
+import style from './SearchBox.module.css';
 
 const SearchBox = () => {
   const dispatch = useDispatch();
-  const filter = useSelector(state => state.filters.name);
+  const filter = useSelector(selectNameFilter);
+  const id = nanoid();
+
+  const handleFilterChange = filter => dispatch(changeFilter(filter));
 
   return (
-    <div className={styles.search}>
-      <input type="text" value={filter} onChange={(e) => dispatch(changeFilter(e.target.value))} placeholder="🔎 Пошук" className={styles.input} />
+    <div className={style.wrap}>
+      <label htmlFor={`filter-${id}`}>Знайти контакт за іменем</label>
+      <input
+        className={style.field}
+        type='input'
+        name='filter'
+        id={`filter-${id}`}
+        autoComplete='on'
+        value={filter}
+        onChange={e => {
+          handleFilterChange(e.target.value);
+        }}
+      />
     </div>
   );
 };

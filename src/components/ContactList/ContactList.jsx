@@ -1,26 +1,44 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact } from '../../redux/contactsSlice';
-import styles from './ContactList.module.css';
+import { useSelector } from 'react-redux';
+import Contact from '../Contact/Contact';
+import { selectContacts, selectNameFilter } from '../../redux/selectors';
+import style from './ContactList.module.css';
+
+const getVisibleContacts = (contactsList, filter) => {
+  switch (filter) {
+    case filter:
+      return contactsList.filter(contact =>
+        contact.name.toLowerCase().includes(filter.toLowerCase())
+      );
+    default:
+      return contactsList;
+  }
+};
 
 const ContactList = () => {
-  const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.items);
-  const filter = useSelector(state => state.filters.name);
-
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
+  const contactsList = useSelector(selectContacts);
+  const filter = useSelector(selectNameFilter);
+  const visibleContacts = getVisibleContacts(contactsList, filter);
 
   return (
-    <ul className={styles.contactList}>
-      {filteredContacts.map(contact => (
-        <li key={contact.id} className={styles.contactItem}>
-          <span>{contact.name}: {contact.number}</span>
-          <button onClick={() => dispatch(deleteContact(contact.id))} className={styles.deleteButton}>🗑 Видалити</button>
-        </li>
-      ))}
-    </ul>
+    <>
+      {visibleContacts.length > 0 ? (
+        <ul className={style.list}>
+          {visibleContacts.map(contact => {
+            return (
+              <li key={contact.id} className={style.item}>
+                <Contact
+                  contactName={contact.name}
+                  contactNumber={contact.number}
+                  contactId={contact.id}
+                />
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <span className={style.emptyList}>Поки що немає жодного контакту</span>
+      )}
+    </>
   );
 };
 

@@ -31,7 +31,7 @@ const Contact = ({ contactName, contactNumber, contactId }) => {
           variant='outlined'
           startIcon={<DeleteIcon />}
         >
-          Delete
+          Видалити
         </Button>
       </div>
     </>
